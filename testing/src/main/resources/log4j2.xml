@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+    <Properties>
+        <Property name="logPath">logs</Property>
+        <Property name="rollingFileName">main</Property>
+        <Property name="errorFileName">error</Property>
+    </Properties>
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout charset="UTF-8" disableAnsi="false">
+                    <LevelPatternSelector defaultPattern="[%highlight{%level}] %d{HH:mm:ss} – %msg%n">
+                        <PatternMatch key="ERROR" pattern="[%highlight{%level}] %d{HH:mm:ss} – %msg. Проверьте error.log для подробностей%n"/>
+                    </LevelPatternSelector>
+                </PatternLayout>
+        </Console>
+        <RollingFile name="rollingFile" immediateFlush="false" fileName="${logPath}/${rollingFileName}.log" filePattern="${logPath}/${rollingFileName}_%d{yyyy-MM-dd}.log">
+            <PatternLayout charset="UTF-8" pattern="[%level] %d{dd/MM/YYYY HH:mm:ss} – %msg%n" />
+            <Policies>
+                <SizeBasedTriggeringPolicy size="2 MB" />
+                <TimeBasedTriggeringPolicy />
+            </Policies>
+        </RollingFile>
+        <File name="errorFile" fileName="${logPath}/${errorFileName}.log" immediateFlush="false" append="false">
+    		<PatternLayout charset="UTF-8" pattern="[%level] %d{dd/MM/YYYY HH:mm:ss} – %msg%n%throwable{full}" />
+		</File>
+    </Appenders>
+    <Loggers>
+    	<Logger name="ru.dumbcode.Stacktrace" level="error" additivity="false">
+            <AppenderRef ref="errorFile" />
+        </Logger>
+        <Root level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+            <AppenderRef ref="rollingFile" />
+        </Root>
+    </Loggers>
+</Configuration>
